@@ -1,0 +1,298 @@
+import sqlite3
+
+class Entity:
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+    def save(self):
+        table_name = self.__class__.__name__.lower() + 's'
+        fields = ', '.join(self.__dict__.keys())
+        placeholders = ', '.join(['?'] * len(self.__dict__))
+        values = tuple(self.__dict__.values())
+        conn = sqlite3.connect('mydatabase.db')
+        cursor = conn.cursor()
+        query = f"INSERT INTO {table_name} ({fields}) VALUES ({placeholders})"
+        cursor.execute(query, values)
+        conn.commit()
+
+class User(Entity):
+    def __init__(self, username, password, email, name):
+        super().__init__(username=username, password=password, email=email, name=name)
+
+    def check_username_exists(self, username):
+        conn = sqlite3.connect('mydatabase.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE username=?", (username,))
+        return cursor.fetchone() is not None
+
+    def login(self):
+        username = input("Enter your username: ")
+        password = input("Enter your password: ")
+        conn = sqlite3.connect('mydatabase.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
+        user = cursor.fetchone()
+        if user is not None:
+            print("Login successful!")
+            self.__dict__.update(zip(['username', 'password', 'email', 'name'], user))
+        else:
+            print("Invalid username or password.")
+
+if __name__ == '__main__':
+    Entity(username='user1', password='pass1', email='user1@example.com', name='User 1').save()
+    Entity(username='user2', password='pass2', email='user2@example.com', name='User 2').save()
+    User(username='user3', password='pass3', email='user3@example.com', name='User 3').save()
+    User(username='user1', password='newpass', email='newemail@example.com', name='New Name').save()
+def create_account(self):
+    username = input("Enter a username: ")
+    while self.check_username_exists(username):
+        username = input("This username already exists, please enter a new one: ")
+    password = input("Enter a password: ")
+    email = input("Enter your email: ")
+    name = input("Enter your name: ")
+    self.cursor.execute('''INSERT INTO users (username, password, email, name)
+                        VALUES (?, ?, ?, ?)''', (username, password, email, name))
+    self.conn.commit()
+    print("Account created successfully!")
+
+def check_username_exists(self, username):
+    self.cursor.execute("SELECT * FROM users WHERE username=?", (username,))
+    return self.cursor.fetchone() is not None
+
+def login(self):
+    username = input("Enter your username: ")
+    password = input("Enter your password: ")
+    self.cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
+    user = self.cursor.fetchone()
+    if user is not None:
+        print("Login successful!")
+        self.username = user[0]
+        self.password = user[1]
+        self.email = user[2]
+        self.name = user[3]
+    else:
+        print("Invalid username or password.")
+
+def __del__(self):
+    self.conn.close()
+def create_post(self):
+    title = input("Enter a title for your post: ")
+    content = input("Enter the content of your post: ")
+    self.cursor.execute('''INSERT INTO posts (title, content, author)
+                        VALUES (?, ?, ?)''', (title, content, self.author))
+    self.conn.commit()
+    print("Post created successfully!")
+
+def get_all_posts(self):
+    self.cursor.execute("SELECT * FROM posts")
+    posts = self.cursor.fetchall()
+    for post in posts:
+        print(post)
+
+def __del__(self):
+    self.conn.close()
+def create_comment(self):
+    content = input("Enter your comment: ")
+    self.cursor.execute('''INSERT INTO comments (post_id, content, author)
+                        VALUES (?, ?, ?)''', (self.post_id, content, self.author))
+    self.conn.commit()
+    print("Comment created successfully!")
+
+def get_comments_by_post(self):
+    self.cursor.execute("SELECT * FROM comments WHERE post_id=?", (self.post_id,))
+    
+def delete_comment(self, comment_id):
+    self.cursor.execute("SELECT * FROM comments WHERE id=? AND author=?", (comment_id, self.author))
+    comment = self.cursor.fetchone()
+    if comment:
+        self.cursor.execute("DELETE FROM comments WHERE id=?", (comment_id,))
+        self.conn.commit()
+        print("Comment deleted successfully!")
+    else:
+        print("You are not authorized to delete this comment.")
+
+def update_comment(self, comment_id):
+    self.cursor.execute("SELECT * FROM comments WHERE id=? AND author=?", (comment_id, self.author))
+    comment = self.cursor.fetchone()
+    if comment:
+        new_content = input("Enter updated content: ")
+        self.cursor.execute("UPDATE comments SET content=? WHERE id=?", (new_content, comment_id))
+        self.conn.commit()
+        print("Comment updated successfully!")
+    else:
+        print("You are not authorized to update this comment.")
+
+def close(self):
+    self.conn.close()
+    print("Connection closed.")
+def delete_comment(self, comment_id):
+    self.cursor.execute("SELECT author FROM comments WHERE id=?", (comment_id,))
+    result = self.cursor.fetchone()
+    if not result:
+        print("Comment not found.")
+        return
+    author = result[0]
+    if author != self.author:
+        print("You are not authorized to delete this comment.")
+        return
+    self.cursor.execute("DELETE FROM comments WHERE id=?", (comment_id,))
+    self.conn.commit()
+    print("Comment deleted successfully!")
+    
+def edit_comment(self, comment_id):
+    self.cursor.execute("SELECT author, content FROM comments WHERE id=?", (comment_id,))
+    result = self.cursor.fetchone()
+    if not result:
+        print("Comment not found.")
+        return
+    author, content = result
+    if author != self.author:
+        print("You are not authorized to edit this comment.")
+        return
+    new_content = input("Enter new content: ")
+    self.cursor.execute("UPDATE comments SET content=? WHERE id=?", (new_content, comment_id))
+    self.conn.commit()
+    print("Comment updated successfully!")
+import mysql.connector
+
+class Car:
+    def __init__(self, make, model, image, fuel_type, num_seats, transmission_type, rental_price_per_day, availability):
+        self.make = make
+        self.model = model
+        self.image = image
+        self.fuel_type = fuel_type
+        self.num_seats = num_seats
+        self.transmission_type = transmission_type
+        self.rental_price_per_day = rental_price_per_day
+        self.availability = availability
+
+def get_available_cars():
+    cars = []
+    try:
+        # Connect to the database
+        conn = mysql.connector.connect(
+            host='localhost',
+            user='root',
+            password='',
+            database='rental_cars'
+        )
+        
+        # Execute the SQL query to retrieve available cars
+        cursor = conn.cursor()
+        query = "SELECT * FROM cars WHERE availability = 'available'"
+        cursor.execute(query)
+        
+        # Fetch the results and create Car objects
+        results = cursor.fetchall()
+        for result in results:
+            car = Car(result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8])
+            cars.append(car)
+        
+        # Close the database connection
+        cursor.close()
+        conn.close()
+    except mysql.connector.Error as error:
+        print(f"Failed to retrieve available cars: {error}")
+    
+    return cars
+
+def display_available_cars(cars):
+    if len(cars) == 0:
+        print("No available cars at the moment.")
+    else:
+        print("Available rental cars:")
+        for car in cars:
+            print(f"Make: {car.make}")
+            print(f"Model: {car.model}")
+            print(f"Image: {car.image}")
+            print(f"Fuel type: {car.fuel_type}")
+            print(f"Number of seats: {car.num_seats}")
+            print(f"Transmission type: {car.transmission_type}")
+            print(f"Rental price per day: {car.rental_price_per_day}")
+            print(f"Availability: {car.availability}")
+            print("")
+available_cars = get_available_cars()
+display_available_cars(available_cars)
+CREATE TABLE cars (
+    id INT NOT NULL AUTO_INCREMENT,
+    make VARCHAR(255) NOT NULL,
+    model VARCHAR(255) NOT NULL,
+    image VARCHAR(255),
+    fuel_type VARCHAR(255),
+    num_seats INT,
+    transmission VARCHAR(255),
+    rental_price DECIMAL(10, 2),
+    availability BOOLEAN,
+    PRIMARY KEY (id)
+);
+import mysql.connector
+
+class Car:
+    def __init__(self, make, model, image, fuel_type, num_seats, transmission, rental_price, availability):
+        self.make = make
+        self.model = model
+        self.image = image
+        self.fuel_type = fuel_type
+        self.num_seats = num_seats
+        self.transmission = transmission
+        self.rental_price = rental_price
+        self.availability = availability
+
+    def save_to_database(self):
+        # Establish a connection to the database
+        cnx = mysql.connector.connect(user='your_username', password='your_password',
+                                      host='your_host', database='your_database')
+
+        # Create a cursor to execute queries
+        cursor = cnx.cursor()
+class Car:
+    # ...
+    
+    @staticmethod
+    def search_cars(make=None, fuel_type=None, num_seats=None, transmission=None, rental_price=None):
+        # Establish a connection to the database
+        cnx = mysql.connector.connect(user='your_username', password='your_password',
+                                      host='your_host', database='your_database')
+
+        # Create a cursor to execute queries
+        cursor = cnx.cursor()
+
+        # Construct a SELECT query with the specified search criteria
+        query = "SELECT * FROM cars WHERE 1=1"
+        if make:
+            query += " AND make = '{}'".format(make)
+        if fuel_type:
+            query += " AND fuel_type = '{}'".format(fuel_type)
+        if num_seats:
+            query += " AND num_seats = {}".format(num_seats)
+        if transmission:
+            query += " AND transmission = '{}'".format(transmission)
+        if rental_price:
+            query += " AND rental_price <= {}".format(rental_price)
+
+        # Execute the SELECT query
+        cursor.execute(query)
+
+        # Fetch all rows that match the search criteria
+        rows = cursor.fetchall()
+
+        # Convert each row into a Car object and
+
+        # Construct an INSERT query
+        add_car = ("INSERT INTO cars "
+                   "(make, model, image, fuel_type, num_seats, transmission, rental_price, availability) "
+                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
+
+        # Define the values to be inserted
+        data_car = (self.make, self.model, self.image, self.fuel_type,
+                    self.num_seats, self.transmission, self.rental_price, self.availability)
+
+        # Execute the INSERT query with the specified values
+        cursor.execute(add_car, data_car)
+
+        # Commit the changes to the database
+        cnx.commit()
+
+        # Close the cursor and connection
+        cursor.close()
+        cnx.close()
